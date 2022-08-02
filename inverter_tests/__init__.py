@@ -1,20 +1,15 @@
 """
-=========
-inverter_tests
-=========
+==============
+Inverter tests
+==============
 
-inverter_tests model template The System Development Kit
-Used as a template for all TheSyDeKick Entities.
+Inverter tests class to demostrate how to create various tests with a testbench.
+There are not that many parameters to change in this example, but the idea is this:
 
-Current docstring documentation style is Numpy
-https://numpydoc.readthedocs.io/en/latest/format.html
+Generate a set of test cases that verifies your chip, and enable their execution so that you do 
+not need to alter the parameters.
 
-This text here is to remind you that documentation is important.
-However, youu may find it out the even the documentation of this 
-entity may be outdated and incomplete. Regardless of that, every day 
-and in every way we are getting better and better :).
-
-Initially written by Marko Kosunen, marko.kosunen@aalto.fi, 2017.
+Initially written by Marko Kosunen, marko.kosunen@aalto.fi, 2022
 
 """
 
@@ -24,6 +19,7 @@ if not (os.path.abspath('../../thesdk') in sys.path):
     sys.path.append(os.path.abspath('../../thesdk'))
 
 from thesdk import *
+from  inverter_testbench import *
 
 import numpy as np
 
@@ -34,14 +30,12 @@ class inverter_tests(thesdk):
 
     def __init__(self,*arg): 
         self.print_log(type='I', msg='Inititalizing %s' %(__name__)) 
-        self.proplist = [ 'Rs' ];    # Properties that can be propagated from parent
         self.Rs =  100e6;            # Sampling frequency
-        self.IOS=Bundle()            # Pointer for input data
-        self.IOS.Members['A']=IO()   # Pointer for input data
-        self.IOS.Members['Z']= IO()
         self.model='py';             # Can be set externally, but is not propagated
         self.par= False              # By default, no parallel processing
         self.queue= []               # By default, no parallel processing
+
+        self.test = 'all'
 
         if len(arg)>=1:
             parent=arg[0]
@@ -51,75 +45,55 @@ class inverter_tests(thesdk):
         self.init()
 
     def init(self):
-        pass #Currently nohing to add
+        pass #Currently nothing to add
 
-    def main(self):
-        '''Guideline. Isolate python processing to main method.
-        
-        To isolate the interna processing from IO connection assigments, 
-        The procedure to follow is
-        1) Assign input data from input to local variable
-        2) Do the processing
-        3) Assign local variable to output
+    def parallel(self):
+        '''Runs parallel simulation
 
         '''
-        inval=self.IOS.Members['A'].Data
-        out=inval
-        if self.par:
-            self.queue.put(out)
-        self.IOS.Members['Z'].Data=out
+        tb=inverter_testbench()
+        tb.models=['py','sv','vhdl','eldo','spectre']
+        tb.configuration='parallel'
+        tb.run()
+
+    def serial(self):
+        '''Runs parallel simulation
+
+        '''
+        tb=inverter_testbench()
+        tb.models=['py','sv','vhdl','eldo','spectre']
+        tb.configuration='serial'
+        tb.run()
+
+    def all(self):
+        '''Runs both parallel and serial simulation, executed in parallel
+
+        '''
+        tb1=inverter_testbench()
+        tb1.models=['py','sv','vhdl','eldo','spectre']
+        tb1.configuration='parallel'
+        tb2=inverter_testbench()
+        tb2.models=['py','sv','vhdl','eldo','spectre']
+        tb2.configuration='serial'
+
+        self.run_parallel(duts=[tb1, tb2], method='run')
 
     def run(self,*arg):
         '''Guideline: Define model depencies of executions in `run` method.
 
         '''
-        if len(arg)>0:
-            self.par=True      #flag for parallel processing
-            self.queue=arg[0]  #multiprocessing.queue as the first argument
-        if self.model=='py':
-            self.main()
+        if self.test=='all':
+            self.all()
+        elif self.test=='parallel':
+            self.parallel()
+        elif self.test=='serial':
+            self.serial()
+        else:
+            self.print_log(type='E', msg="Test %s not defined. %(self.test)")
+        self.print_log(type='I', msg="See inv*.eps figures for results")
 
 if __name__=="__main__":
-    import matplotlib.pyplot as plt
-    from  inverter_tests import *
-    from  inverter_tests.controller import controller as inverter_tests_controller
-    import pdb
-    import math
-    length=1024
-    rs=100e6
-    indata=np.cos(2*math.pi/length*np.arange(length)).reshape(-1,1)
-
-    models=[ 'py']
-    duts=[]
-    for model in models:
-        d=inverter_tests()
-        duts.append(d) 
-        d.model=model
-        d.Rs=rs
-        d.IOS.Members['A'].Data=indata
-        d.init()
-        d.run()
-
-    for k in range(len(duts)):
-        hfont = {'fontname':'Sans'}
-        figure,axes=plt.subplots(2,1,sharex=True)
-        x = np.arange(length).reshape(-1,1)
-        axes[0].plot(x,indata)
-        axes[0].set_ylim(-1.1, 1.1);
-        axes[0].set_xlim((np.amin(x), np.amax(x)));
-        axes[0].set_ylabel('Input', **hfont,fontsize=18);
-        axes[0].grid(True)
-        axes[1].plot(x, duts[k].IOS.Members['Z'].Data)
-        axes[1].set_ylim(-1.1, 1.1);
-        axes[1].set_xlim((np.amin(x), np.amax(x)));
-        axes[1].set_ylabel('Output', **hfont,fontsize=18);
-        axes[1].set_xlabel('Sample (n)', **hfont,fontsize=18);
-        axes[1].grid(True)
-        titlestr = "Myentity model %s" %(duts[k].model) 
-        plt.suptitle(titlestr,fontsize=20);
-        plt.grid(True);
-        printstr="./inv_%s.eps" %(duts[k].model)
-        plt.show(block=False);
-        figure.savefig(printstr, format='eps', dpi=300);
-    input()
+    from inverter_tests import *
+    tests=inverter_tests()
+    tests.run()
 
