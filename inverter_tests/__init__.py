@@ -94,7 +94,6 @@ class inverter_tests(thesdk):
 
 if __name__=="__main__":
     import argparse
-    import pdb
     from inverter_tests import *
     
     # Implement argument parser. See configure and Makefile for how it is used.
@@ -105,7 +104,6 @@ if __name__=="__main__":
 
     tests=inverter_tests()
     print(args.test)
-    pdb.set_trace()
     tests.test=args.test
     tests.run()
 
