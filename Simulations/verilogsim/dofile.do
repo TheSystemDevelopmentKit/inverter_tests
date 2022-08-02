@@ -1,7 +1,7 @@
 add wave -position insertpoint  \
-sim/:tb_myentity:A \
-sim/:tb_myentity:initdone \
-sim/:tb_myentity:clock \
-sim/:tb_myentity:Z \
+sim/:tb_inverter_tests:A \
+sim/:tb_inverter_tests:initdone \
+sim/:tb_inverter_tests:clock \
+sim/:tb_inverter_tests:Z \
 
 run -all
