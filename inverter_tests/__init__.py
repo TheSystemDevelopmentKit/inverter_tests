@@ -93,7 +93,19 @@ class inverter_tests(thesdk):
         self.print_log(type='I', msg="See inv*.eps figures for results")
 
 if __name__=="__main__":
+    import argparse
+    import pdb
     from inverter_tests import *
+    
+    # Implement argument parser. See configure and Makefile for how it is used.
+    parser = argparse.ArgumentParser(description='Parse selectors')
+    parser.add_argument('--test', dest='test', type=str, nargs='?', const = True, 
+            default='all' ,help='Test to execute all | serial | parallel')
+    args=parser.parse_args()
+
     tests=inverter_tests()
+    print(args.test)
+    pdb.set_trace()
+    tests.test=args.test
     tests.run()
 
