@@ -1,19 +1,17 @@
-.. inverter_tests documentation master file.
-   You can adapt this file completely to your liking, 
-   but it should at least contain the root `toctree` directive.
+.. rtl documentation master file, created by
+   sphinx-quickstart on Thu Aug 15 11:47:06 2019.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+==============
+Inverter_tests
+==============
 
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
 
-.. automodule:: inverter_tests
-   :members:
-   :undoc-members:
+   sections
 
+   indices_and_tables
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
