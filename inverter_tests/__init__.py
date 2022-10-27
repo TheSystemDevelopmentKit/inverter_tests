@@ -52,7 +52,7 @@ class inverter_tests(thesdk):
 
         '''
         tb=inverter_testbench()
-        tb.models=['py','sv','vhdl','eldo','spectre']
+        tb.models=['py','icarus','ngspice']
         tb.configuration='parallel'
         tb.run()
 
@@ -61,7 +61,7 @@ class inverter_tests(thesdk):
 
         '''
         tb=inverter_testbench()
-        tb.models=['py','sv','vhdl','eldo','spectre']
+        tb.models=['py','icarus','ngspice']
         tb.configuration='serial'
         tb.run()
 
@@ -70,10 +70,10 @@ class inverter_tests(thesdk):
 
         '''
         tb1=inverter_testbench()
-        tb1.models=['py','sv','vhdl','eldo','spectre']
+        tb1.models=['py','icarus','ngspice']
         tb1.configuration='parallel'
         tb2=inverter_testbench()
-        tb2.models=['py','sv','vhdl','eldo','spectre']
+        tb2.models=['py','icarus','ngspice']
         tb2.configuration='serial'
 
         self.run_parallel(duts=[tb1, tb2], method='run')
