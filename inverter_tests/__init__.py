@@ -62,7 +62,7 @@ class inverter_tests(thesdk):
         '''
         tb=inverter_testbench()
         if self.tools == 'open':
-            tb.models=['py','icarus', 'ghdl', 'ngspice']
+            tb.models=['py','icarus', 'verilator', 'ghdl', 'ngspice']
         elif self.tools == 'proprietary':
             tb.models=['sv']
         tb.configuration='parallel'
@@ -74,7 +74,7 @@ class inverter_tests(thesdk):
         '''
         tb=inverter_testbench()
         if self.tools == 'open':
-            tb.models=['py','icarus', 'ghdl', 'ngspice']
+            tb.models=['py','icarus', 'verilator', 'ghdl', 'ngspice']
         elif self.tools == 'proprietary':
             tb.models=['sv']
         tb.configuration='serial'
@@ -87,7 +87,7 @@ class inverter_tests(thesdk):
         # Firsttestbench
         tb1=inverter_testbench()
         if self.tools == 'open':
-            tb1.models=['py','icarus', 'ghdl', 'ngspice']
+            tb1.models=['py','icarus', 'verilator', 'ghdl', 'ngspice']
         elif self.tools == 'proprietary':
             tb1.models=['sv']
         tb1.configuration='parallel'
@@ -95,7 +95,7 @@ class inverter_tests(thesdk):
         # Second testbench
         tb2=inverter_testbench()
         if self.tools == 'open':
-            tb2.models=['py','icarus', 'ghdl', 'ngspice']
+            tb2.models=['py','icarus', 'verilator', 'ghdl', 'ngspice']
         elif self.tools == 'proprietary':
             tb2.models=['sv']
         tb2.configuration='serial'
