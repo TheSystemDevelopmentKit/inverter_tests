@@ -23,6 +23,7 @@ cat << EOF > ${THISDIR}/Makefile
 .PHONY: all sim doc clean
 
 TEST ?= 'all'
+TOOLS ?= 'open'
 
 #all: chisel sim
 all: sim
@@ -30,7 +31,11 @@ all: sim
 #sim: chisel
 sim:
 	cd ${THISDIR}/${MODULE} && \\
-    ${PYL} __init__.py --test \$(TEST)
+    ${PYL} __init__.py --test \$(TEST) --tools \$(TOOLS)
+
+proprietary:
+	cd ${THISDIR}/${MODULE} && \\
+    ${PYL} __init__.py --test \$(TEST) --tools 'proprietary'
 
 #chisel:
 #	cd $THISDIR/chisel && \\

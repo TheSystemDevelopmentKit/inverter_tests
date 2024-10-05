@@ -19,7 +19,7 @@ if not (os.path.abspath('../../thesdk') in sys.path):
     sys.path.append(os.path.abspath('../../thesdk'))
 
 from thesdk import *
-from  inverter_testbench import *
+from inverter_testbench import *
 
 import numpy as np
 
@@ -44,6 +44,15 @@ class inverter_tests(thesdk):
 
         self.init()
 
+    @property
+    def tools(self):
+        if not hasattr(self,'_tools'):
+            self._tools = 'open'
+        return self._tools
+    @tools.setter
+    def tools(self,value):
+            self._tools = value
+
     def init(self):
         pass #Currently nothing to add
 
@@ -52,7 +61,10 @@ class inverter_tests(thesdk):
 
         '''
         tb=inverter_testbench()
-        tb.models=['py','icarus', 'ghdl', 'ngspice']
+        if self.tools == 'open':
+            tb.models=['py','icarus', 'ghdl', 'ngspice']
+        elif self.tools == 'proprietary':
+            tb.models=['sv']
         tb.configuration='parallel'
         tb.run()
 
@@ -61,7 +73,10 @@ class inverter_tests(thesdk):
 
         '''
         tb=inverter_testbench()
-        tb.models=['py','icarus', 'ghdl', 'ngspice']
+        if self.tools == 'open':
+            tb.models=['py','icarus', 'ghdl', 'ngspice']
+        elif self.tools == 'proprietary':
+            tb.models=['sv']
         tb.configuration='serial'
         tb.run()
 
@@ -69,11 +84,20 @@ class inverter_tests(thesdk):
         '''Runs both parallel and serial simulation, executed in parallel
 
         '''
+        # Firsttestbench
         tb1=inverter_testbench()
-        tb1.models=['py', 'icarus', 'ghdl', 'ngspice']
+        if self.tools == 'open':
+            tb1.models=['py','icarus', 'ghdl', 'ngspice']
+        elif self.tools == 'proprietary':
+            tb1.models=['sv']
         tb1.configuration='parallel'
+
+        # Second testbench
         tb2=inverter_testbench()
-        tb2.models=['py','icarus', 'ghdl', 'ngspice']
+        if self.tools == 'open':
+            tb2.models=['py','icarus', 'ghdl', 'ngspice']
+        elif self.tools == 'proprietary':
+            tb2.models=['sv']
         tb2.configuration='serial'
 
         self.run_parallel(duts=[tb1, tb2], method='run')
@@ -100,10 +124,12 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(description='Parse selectors')
     parser.add_argument('--test', dest='test', type=str, nargs='?', const = True, 
             default='all' ,help='Test to execute all | serial | parallel')
+    parser.add_argument('--tools', dest='tools', type=str, nargs='?', const = True, 
+            default='all' ,help='Tools to use open | proprietary')
     args=parser.parse_args()
 
     tests=inverter_tests()
-    print(args.test)
     tests.test=args.test
+    tests.tools=args.tools
     tests.run()
 
